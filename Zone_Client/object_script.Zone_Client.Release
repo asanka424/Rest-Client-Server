@@ -3,7 +3,6 @@ INPUT(
 ./..\bin-temp\Zone_Client\mainwindow.o
 ./..\bin-temp\Zone_Client\signupdialog.o
 ./..\bin-temp\Zone_Client\signindialog.o
-./..\bin-temp\Zone_Client\requestmanager.o
 ./..\bin-temp\Zone_Client\mydatamodel.o
 ./..\bin-temp\Zone_Client\dropmenudelegate.o
 ./..\bin-temp\Zone_Client\configuration.o
@@ -14,7 +13,6 @@ INPUT(
 ./..\bin-temp\Zone_Client\moc_mainwindow.o
 ./..\bin-temp\Zone_Client\moc_signupdialog.o
 ./..\bin-temp\Zone_Client\moc_signindialog.o
-./..\bin-temp\Zone_Client\moc_requestmanager.o
 ./..\bin-temp\Zone_Client\moc_mydatamodel.o
 ./..\bin-temp\Zone_Client\moc_dropmenudelegate.o
 ./..\bin-temp\Zone_Client\moc_controller.o

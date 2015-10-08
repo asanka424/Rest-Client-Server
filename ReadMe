@@ -22,6 +22,7 @@ Build and Run
 Qt 5.x is required to build this project. Easiest way is to use Qt Creator
 
 TODO
+Server Log file
 Unit tests
 Code review
 refactor

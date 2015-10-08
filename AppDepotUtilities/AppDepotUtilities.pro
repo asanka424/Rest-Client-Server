@@ -35,4 +35,4 @@ OBJECTS_DIR = $$_PRO_FILE_PWD_/../bin-temp/$${TARGET}
 
 
 
-LIBS+= -L$${DESTDIR}/ -lTufao
+
