@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>resources/private.pem</file>
+        <file>resources/public.pem</file>
+    </qresource>
+</RCC>

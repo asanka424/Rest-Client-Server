@@ -1,0 +1,26 @@
+Toptal Project
+
+Description - 
+
+This project consists of two main programs, Zone_Client and Zone_Server. Zone_Client communicates with Zone_Server via  REST api. Zone_Client is used  to store timezone details. Zone_Client uses Qt widgets for its UI. Zone_Server uses Tufao Http server for HTTP communications and a sqlite DB for storing data. Zone_Server can operate in either HTTP mode or HTTPS mode depending on a build variable.
+
+SignUp - Users can sign up to a new account. They can request themselves to be an Admin user, which they can alter other users
+
+Signin - After signing operation, the client will be given a authentication token which need to be used in API calls after that. Operations include, 
+	sync data
+	modify user
+	delete user
+	sign out
+
+Sync data - Client data is synced with server DB. This will be called when user is signed out and main program is closed.
+
+Modify/delete user - Admin users can modify/delete all users while non-adming users can modify/delete there accounts only
+
+Build and Run
+Qt 5.x is required to build this project. Easiest way is to use Qt Creator
+
+TODO
+Unit tests
+Code review
+refactor
+

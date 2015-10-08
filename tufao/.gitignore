@@ -1,0 +1,4 @@
+build
+builds
+*.pro.user
+CMakeLists.txt.user

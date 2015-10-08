@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/Data">
+        <file>resources/timezones.csv</file>
+        <file>resources/styles.css</file>
+        <file>resources/arrow-down.png</file>
+    </qresource>
+</RCC>

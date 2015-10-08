@@ -1,0 +1,10 @@
+QComboBox
+{
+    background-color:white;
+    border: 0px;
+}
+
+QComboBox::drop-down:button{
+background-color: white;
+image: url(":Data/resources/arrow-down.png");
+}

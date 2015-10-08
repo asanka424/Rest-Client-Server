@@ -1,0 +1,11 @@
+bin/
+bin-temp/
+GeneratedFiles/
+Makefile
+Makefile*
+*.user
+*.user.*
+Debug/
+debug/
+Release/
+release/

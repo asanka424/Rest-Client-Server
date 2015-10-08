@@ -1,0 +1,106 @@
+#include "mainwindow.h"
+#include "ui_mainwindow.h"
+#include <QModelIndex>
+#include <QFile>
+#include <QTextStream>
+
+MainWindow::MainWindow(QWidget *parent) :
+    QMainWindow(parent),
+    ui(new Ui::MainWindow)
+{
+    ui->setupUi(this);
+    loadTimeZones();
+    model = new MyDataModel();
+
+
+
+    ui->tableView->setModel(model->getModel());
+    delegate = new DropMenuDelegate(timeZones);
+    ui->tableView->setItemDelegateForColumn(1,delegate);
+    int rows = model->getModel()->rowCount();
+    for (int i=0; i<rows; i++)
+        ui->tableView->openPersistentEditor(model->getModel()->index(i,1));
+    ui->tableView->setSortingEnabled(true);
+    ui->tableView->resizeColumnsToContents();
+    ui->tableView->horizontalHeader()->setStretchLastSection(true);
+    ui->tableView->setColumnHidden(0,true);
+
+
+    connect(ui->btn_add,SIGNAL(clicked()),this,SLOT(addNewRow()),Qt::QueuedConnection);
+    connect(ui->btn_delete,SIGNAL(clicked()),this,SLOT(deleteRow()),Qt::QueuedConnection);
+
+
+}
+
+
+
+MainWindow::~MainWindow()
+{
+    delete ui;
+    delegate->deleteLater();
+    model->deleteLater();
+}
+
+void MainWindow::init(int mode)
+{
+    if (mode == 0)
+    {
+        ui->cb_user->hide();
+        ui->btn_deleteUseer->hide();
+    }
+    else
+    {
+        ui->cb_user->show();
+        ui->btn_deleteUseer->show();
+    }
+}
+
+void MainWindow::loadTimeZones()
+{
+    QFile timeZoneFile(":Data/resources/timezones.csv");
+    if (timeZoneFile.open(QIODevice::ReadOnly))
+    {
+        QTextStream out(&timeZoneFile);
+        while (!out.atEnd())
+        {
+            timeZones.push_back(out.readLine());
+        }
+    }
+}
+void MainWindow::addNewRow()
+{
+
+    QList<QStandardItem*> newRow;
+    for (int i=0;i<(model->getModel())->columnCount();i++)
+    {
+        QStandardItem* itm;
+        if (i==2)
+            itm = new QStandardItem(QString("Pacific/Midway ( -11:00 )"));
+        else if (i==0)
+             itm = new QStandardItem("-1");
+        newRow.append(itm);
+    }
+    model->getModel()->appendRow(newRow);
+    ui->tableView->openPersistentEditor(model->getModel()->index(model->getModel()->rowCount()-1,2));
+    ui->tableView->resizeColumnsToContents();
+    ui->tableView->horizontalHeader()->setStretchLastSection(true);
+}
+
+void MainWindow::deleteRow()
+{
+    QModelIndexList indexes = ui->tableView->selectionModel()->selection().indexes();
+    QMap<int,bool> rowMap;
+    for (int i = 0; i < indexes.count(); ++i)
+    {
+        QModelIndex index = indexes.at(i);
+        rowMap.insert(index.row(),true);
+        // To get the row/column numbers use index.row() / index.column()
+    }
+    QMap<int,bool>::iterator i;
+    int pos=0;
+    for (i = rowMap.begin(); i != rowMap.end(); ++i)
+    {
+        model->getModel()->removeRow(i.key() - pos);
+        pos++;
+    }
+}
