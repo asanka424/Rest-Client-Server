@@ -12,13 +12,14 @@ using std::placeholders::_1;
 using std::placeholders::_2;
 using std::placeholders::_3;
 using std::placeholders::_4;
+using std::placeholders::_5;
 
 DataHandler::DataHandler(QObject *parent)
     :   AbstractOperationsHandler(parent)
 {
-    DataOperation getDataOp = std::bind(&DataHandler::getData,this, _1, _2, _3,_4);
-    DataOperation putDataOp = std::bind(&DataHandler::putData,this, _1, _2, _3,_4);
-    DataOperation getUsersOp = std::bind(&DataHandler::getUsers,this, _1, _2, _3,_4);
+    DataOperation getDataOp = std::bind(&DataHandler::getData,this, _1, _2, _3,_4,_5);
+    DataOperation putDataOp = std::bind(&DataHandler::putData,this, _1, _2, _3,_4,_5);
+    DataOperation getUsersOp = std::bind(&DataHandler::getUsers,this, _1, _2, _3,_4,_5);
 
     mOperations["getdata"] = getDataOp;
     mOperations["putdata"] = putDataOp;
@@ -47,7 +48,7 @@ void DataHandler::handleOperations(QStringList &operations, QString &method, QBy
                 QString operation = operations[0];
                 if (mOperations.contains(operation))
                 {
-                    mOperations[operation](method,requestData,queryMap,response);
+                    mOperations[operation](method,requestData,queryMap,user,response);
                 }
                 else
                 {
@@ -76,7 +77,7 @@ void DataHandler::handleOperations(QStringList &operations, QString &method, QBy
 
 }
 
-void DataHandler::getData(QString &method,QByteArray &requestData, QMap<QString, QString> &queryMap, Tufao::HttpServerResponse &response)
+void DataHandler::getData(QString &method,QByteArray &requestData, QMap<QString, QString> &queryMap, const QString &reqUser, Tufao::HttpServerResponse &response)
 {
     //works only for GET
     if (method != "GET")
@@ -89,11 +90,21 @@ void DataHandler::getData(QString &method,QByteArray &requestData, QMap<QString,
         if (queryMap.contains("user"))
         {
             QString user = queryMap["user"];
-            QList<QList<QString> > data = DBHandler::instance()->getData(user);
-            QByteArray encodedData = JSONHandler::encodeData(data);
-            qDebug() << encodedData;
-            response.writeHead(Tufao::HttpResponseStatus::OK);
-            response.end(encodedData);
+            //check if getting someone elses data
+            if (user != reqUser)
+            {
+                response.writeHead(Tufao::HttpResponseStatus::FORBIDDEN);
+                response.end(JSONHandler::encodeError("Operation forbidden"));
+            }
+            else
+            {
+                QList<QList<QString> > data = DBHandler::instance()->getData(user);
+                QByteArray encodedData = JSONHandler::encodeData(data);
+                qDebug() << encodedData;
+                response.writeHead(Tufao::HttpResponseStatus::OK);
+                response.end(encodedData);
+            }
+
 
         }
         else
@@ -104,7 +115,7 @@ void DataHandler::getData(QString &method,QByteArray &requestData, QMap<QString,
     }
 }
 
-void DataHandler::putData(QString &method,QByteArray &requestData, QMap<QString, QString> &queryMap, Tufao::HttpServerResponse &response)
+void DataHandler::putData(QString &method,QByteArray &requestData, QMap<QString, QString> &queryMap,const QString &reqUser, Tufao::HttpServerResponse &response)
 {
     //works only for PUT
     if (method != "PUT")
@@ -117,29 +128,40 @@ void DataHandler::putData(QString &method,QByteArray &requestData, QMap<QString,
         QVariantMap requestMap = JSONHandler::decodeJsonString(requestData);
         if ((requestMap.contains("user")) && (requestMap.contains("data")))
         {
+
             QString user = requestMap["user"].toString();
-            QList<QVariant> variantData = requestMap["data"].toList();
-            QList<QList<QString> > data;
-            for (int i=0; i<variantData.size(); i++)
+            //check putting data for someone else
+            if (user != reqUser)
             {
-                QList<QString> row;
-                QList<QVariant> variantRow = variantData[i].toList();
-                for (int j=0; j<variantRow.size(); j++)
-                    row.append(variantRow[j].toString());
-
-                data.append(row);
-
-            }
-            if (DBHandler::instance()->putData(user,data))
-            {
-                response.writeHead(Tufao::HttpResponseStatus::OK);
-                response.end();
+                response.writeHead(Tufao::HttpResponseStatus::FORBIDDEN);
+                response.end(JSONHandler::encodeError("Operation forbidden"));
             }
             else
             {
-                response.writeHead(Tufao::HttpResponseStatus::INTERNAL_SERVER_ERROR);
-                response.end(JSONHandler::encodeError("Internal Error while updating"));
+                QList<QVariant> variantData = requestMap["data"].toList();
+                QList<QList<QString> > data;
+                for (int i=0; i<variantData.size(); i++)
+                {
+                    QList<QString> row;
+                    QList<QVariant> variantRow = variantData[i].toList();
+                    for (int j=0; j<variantRow.size(); j++)
+                        row.append(variantRow[j].toString());
+
+                    data.append(row);
+
+                }
+                if (DBHandler::instance()->putData(user,data))
+                {
+                    response.writeHead(Tufao::HttpResponseStatus::OK);
+                    response.end();
+                }
+                else
+                {
+                    response.writeHead(Tufao::HttpResponseStatus::INTERNAL_SERVER_ERROR);
+                    response.end(JSONHandler::encodeError("Internal Error while updating"));
+                }
             }
+
 
         }
         else
@@ -150,7 +172,7 @@ void DataHandler::putData(QString &method,QByteArray &requestData, QMap<QString,
     }
 }
 
-void DataHandler::getUsers(QString &method,QByteArray &requestData, QMap<QString, QString> &queryMap, Tufao::HttpServerResponse &response)
+void DataHandler::getUsers(QString &method,QByteArray &requestData, QMap<QString, QString> &queryMap, const QString &reqUser, Tufao::HttpServerResponse &response)
 {
     //works only for PUT
     if (method != "GET")
@@ -164,18 +186,27 @@ void DataHandler::getUsers(QString &method,QByteArray &requestData, QMap<QString
         if (queryMap.contains("user"))
         {
             QString user = queryMap["user"];
-            QList<QPair<QString, int> > users;
-            if (DBHandler::instance()->getUsers(user,users))
+            if (user != reqUser)
             {
-
-                response.writeHead(Tufao::HttpResponseStatus::OK);
-                response.end(JSONHandler::encodeUserList("users",users));
+                response.writeHead(Tufao::HttpResponseStatus::FORBIDDEN);
+                response.end(JSONHandler::encodeError("Operation forbidden"));
             }
             else
             {
-                response.writeHead(Tufao::HttpResponseStatus::INTERNAL_SERVER_ERROR);
-                response.end(JSONHandler::encodeError("Internal Error while updating"));
+                QList<QPair<QString, int> > users;
+                if (DBHandler::instance()->getUsers(user,users))
+                {
+
+                    response.writeHead(Tufao::HttpResponseStatus::OK);
+                    response.end(JSONHandler::encodeUserList("users",users));
+                }
+                else
+                {
+                    response.writeHead(Tufao::HttpResponseStatus::INTERNAL_SERVER_ERROR);
+                    response.end(JSONHandler::encodeError("Internal Error while updating"));
+                }
             }
+
 
         }
         else

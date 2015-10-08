@@ -16,16 +16,16 @@ class DataHandler : public AbstractOperationsHandler
     Q_OBJECT
 
  public:
-    typedef std::function<void(QString &method,QByteArray &requestData, QMap<QString, QString> &queryMap, Tufao::HttpServerResponse &response)> DataOperation;
+    typedef std::function<void(QString &method,QByteArray &requestData, QMap<QString, QString> &queryMap, const QString &reqUser, Tufao::HttpServerResponse &response)> DataOperation;
      explicit DataHandler( QObject *parent = 0);
     ~DataHandler();
-    void handleOperations(QStringList &operations, QString &method,QByteArray &requestData, QMap<QString, QString> &queryMap,
+    void handleOperations(QStringList &operations, QString &method, QByteArray &requestData, QMap<QString, QString> &queryMap,
                           QMap<QString,QString> &headerMap, Tufao::HttpServerResponse &response);
 
 private:
-    void getData(QString &method,QByteArray &requestData, QMap<QString, QString> &queryMap, Tufao::HttpServerResponse &response);
-    void putData(QString &method,QByteArray &requestData, QMap<QString, QString> &queryMap, Tufao::HttpServerResponse &response);
-    void getUsers(QString &method,QByteArray &requestData, QMap<QString, QString> &queryMap, Tufao::HttpServerResponse &response);
+    void getData(QString &method,QByteArray &requestData, QMap<QString, QString> &queryMap, const QString &reqUser, Tufao::HttpServerResponse &response);
+    void putData(QString &method,QByteArray &requestData, QMap<QString, QString> &queryMap, const QString &reqUser, Tufao::HttpServerResponse &response);
+    void getUsers(QString &method,QByteArray &requestData, QMap<QString, QString> &queryMap,const QString &reqUser, Tufao::HttpServerResponse &response);
     //bool authenticateUser(const QString &user, const QString &authToken);
 
 
