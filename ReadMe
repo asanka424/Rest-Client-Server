@@ -6,6 +6,12 @@ Project is done using C++/Qt libraries.
 
 This project consists of two main programs, Zone_Client and Zone_Server. Zone_Client communicates with Zone_Server via  REST api. Zone_Client is used  to store timezone details. Zone_Client uses Qt widgets for its UI. Zone_Server uses Tufao Http server for HTTP communications and a sqlite DB for storing data. Zone_Server can operate in either HTTP mode or HTTPS mode depending on a build variable.
 
+Main design philosophy is to have asynchronous operations as much as can. Qt's asynchronous signals and slots mechanism provide a good platform for this.
+
+Client app loosely matches in to MVC pattern. And Server uses lot of composition and interfaces so that features can be added withing a known framework.
+
+Client and Server uses configuration files for initialization data.
+
 SignUp - Users can sign up to a new account. They can request themselves to be an Admin user, which they can alter other users
 
 Signin - After signing operation, the client will be given a authentication token which need to be used in API calls after that. Operations include, 
@@ -20,6 +26,10 @@ Modify/delete user - Admin users can modify/delete all users while non-admin use
 
 Build and Run
 Qt 5.x is required to build this project. Easiest way is to use Qt Creator
+
+Change Zone_Client/resources/Configurations.conf to reflect the server URL.
+
+
 
 TODO
 Server Log file

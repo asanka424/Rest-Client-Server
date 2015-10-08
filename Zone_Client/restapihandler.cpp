@@ -16,7 +16,7 @@ using std::placeholders::_3;
 RestApiHandler::RestApiHandler(QObject *parent) : QObject(parent)
 {
     mNAM = new QNetworkAccessManager(this);
-    QObject::connect(mNAM,&QNetworkAccessManager::sslErrors,[](QNetworkReply *reply, QList<QSslError> errors){reply->ignoreSslErrors();});
+    QObject::connect(mNAM,&QNetworkAccessManager::sslErrors,[](QNetworkReply *reply){reply->ignoreSslErrors();});
 
     ReplyHandle signinReply = std::bind(&RestApiHandler::signInReplyHandle,this, _1,_2,_3);
     ReplyHandle signupReply = std::bind(&RestApiHandler::signUpReplyHandle,this, _1,_2,_3);

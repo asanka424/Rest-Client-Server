@@ -20,7 +20,7 @@ public:
 
 
 public slots:
-    void itemSelected(QString);
+    void itemSelected();
 
 private:
     QVector<QString> Items;

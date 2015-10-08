@@ -27,7 +27,7 @@ QWidget *DropMenuDelegate::createEditor(QWidget *parent, const QStyleOptionViewI
        editor->setStyleSheet(StyleSheet);
    }
 
-  connect(editor,SIGNAL(currentTextChanged(QString)),this,SLOT(itemSelected(QString)),Qt::QueuedConnection);
+  connect(editor,SIGNAL(currentTextChanged(QString)),this,SLOT(itemSelected()),Qt::QueuedConnection);
   for(int i = 0; i < Items.size(); ++i)
     {
     editor->addItem(Items[i]);
@@ -35,7 +35,7 @@ QWidget *DropMenuDelegate::createEditor(QWidget *parent, const QStyleOptionViewI
   return editor;
 }
 
-void DropMenuDelegate::itemSelected(QString val)
+void DropMenuDelegate::itemSelected()
 {
     //emit commitData(qobject_cast<QComboBox*>(sender()));
     closeEditor(qobject_cast<QComboBox*>(sender()));

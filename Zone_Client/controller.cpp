@@ -62,10 +62,7 @@ void Controller::makeConnections()
     connect(mMainWindow,SIGNAL(signout()),this,SLOT(onSignOutInvoked()));
     connect(mMainWindow,SIGNAL(ownUserDeleted()),this,SLOT(onOwnUserDeleted()));
 }
-void Controller::widgetClosed()
-{
-    exit(0);
-}
+
 
 void Controller::onSignInInvoked(const QString &user, const QString &password)
 {

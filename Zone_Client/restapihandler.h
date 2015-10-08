@@ -13,10 +13,11 @@ public:
     typedef std::function<void(int status, QNetworkReply *reply,const QVariantMap &resultMap)> ReplyHandle;
     explicit RestApiHandler(QObject *parent = 0);
     ~RestApiHandler();
+
+    //Requests
     void sendSigninRequest(const QString &userName, const QString &password);
     void sendCheckUserNameRequest(const QString &userName);
     void sendSignUpRequest(const QString &user, const QString &password, int isAdmin);
-
     void sendGetDataRequest(const QString &user);
     void sendPutDataRequest(const QString &user, const QList<QList<QString> > &data);
     void sendGetUserListRequest(const QString &user);

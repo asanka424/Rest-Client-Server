@@ -47,9 +47,7 @@ signals:
 
 private slots:
     void on_actionUser_Management_triggered();
-
     void on_actionExit_triggered();
-
     void on_actionSign_Out_triggered();
 
 private:
@@ -58,8 +56,8 @@ private:
 
 private:
     Ui::MainWindow *ui;
-     MyDataModel *model;
-     QString mUser;
+    MyDataModel *model;
+    QString mUser;
     DropMenuDelegate *delegate;
     UserMod *mUserModDialog;
     QVector<QString> timeZones;

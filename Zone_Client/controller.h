@@ -23,31 +23,27 @@ private:
 signals:
 
 public slots:
-    //void onupdateState(int newState);
+    //operations
+    void onSignUpInvoked();
+    void onGetUserListInvoked(const QString &user);
+    void onModifyUserInvoked(const QString &user, const QString &password, int isAdmin);
+    void onLoadDataInvoked();
+    void onSignInInvoked(const QString &user, const QString &password);
+    void onDeleteUserInvoked(const QString &user);
+    void onSignUpOperationInvoked(const QString &user, const QString &pass, int isAdmin);
+    void onSignInClickedReceived();
+    void onPutDataInvoked(const QString &user, const QList<QList<QString> > &data);
+    void onCheckNameInvoked(const QString &user);
+    void onSignOutInvoked();
+
+
+    // replies
     void onSignUpReplyReceived(bool status, const QVariantMap &replyMap);
     void onSignInReplyReceived(bool status, const QVariantMap &replyMap);
     void onCheckNameReplyReceived(bool status, const QVariantMap &replyMap);
-
-    void onGetUserListInvoked(const QString &user);
-    void onModifyUserInvoked(const QString &user, const QString &password, int isAdmin);
-
-    void onLoadDataInvoked();
-
-    void onDeleteUserInvoked(const QString &user);
-    //void onReplyReceived(int status, const QVariantMap &jMap);
-    void widgetClosed();
-    void onSignInInvoked(const QString &user, const QString &password);
-    void onSignUpInvoked();
-    void onSignUpOperationInvoked(const QString &user, const QString &pass, int isAdmin);
-    void onSignInClickedReceived();
-
-    void onPutDataInvoked(const QString &user, const QList<QList<QString> > &data);
-
-
-    void onCheckNameInvoked(const QString &user);
-
-    void onSignOutInvoked();
     void onSignoutReplyReceived(bool status, const QVariantMap &jMap);
+
+
     void onOwnUserDeleted();
 
 
